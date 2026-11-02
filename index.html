@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tax Return Preparation Workflow</title>
+<style>
+/* Layout: a ledger. One chain across the top, then the same nine stages re-read three ways (cards, table, do-it-yourself). */
+:root{
+  --bg:#f7f6f2; --paper:#ffffff; --fg:#1d2430; --muted:#5d6675; --rule:#d9d7cf;
+  --ink:#1f3a5f;            /* accent: ledger ink */
+  --client:#b8741a; --client-bg:#fbf1e1;
+  --firm:#1f5f8b;   --firm-bg:#e4eef6;
+  --third:#6b6480;  --third-bg:#ece9f1;
+  --none:#8a8f99;   --none-bg:#eeeeee;
+  /* AE system of meaning: color says how to read what follows */
+  --ae-take:#D9731F; --ae-take-bg:#FBF1E6;
+  --ae-def:#2F4C7E;  --ae-def-bg:#E9EEF6;
+  --ae-ex:#3E8E4B;   --ae-ex-bg:#E8F3EA;
+  --ae-check:#2A8893;--ae-check-bg:#E5F2F3;
+  --ae-warn:#C4372D; --ae-warn-bg:#F9E8E6;
+  --ae-tech:#3D4FBA; --ae-tech-bg:#E9EBF8;
+  --display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#15181e; --paper:#1d2129; --fg:#e8e6df; --muted:#a3a9b4; --rule:#343a45;
+  --ink:#9dbfe6;
+  --client:#e3a84a; --client-bg:#3a2d16;
+  --firm:#6fb0e0;   --firm-bg:#1a2f44;
+  --third:#b3abd0;  --third-bg:#2b2838;
+  --none:#9aa0aa;   --none-bg:#2a2d33;
+  --ae-take:#F0A35A; --ae-take-bg:#3A2A17; --ae-def:#8FB0E6; --ae-def-bg:#1B2538;
+  --ae-ex:#7FCB8A; --ae-ex-bg:#1A2E1E; --ae-check:#6FC5CE; --ae-check-bg:#173033;
+  --ae-warn:#F08077; --ae-warn-bg:#3A1E1C; --ae-tech:#9AA6F0; --ae-tech-bg:#1F2340;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#15181e; --paper:#1d2129; --fg:#e8e6df; --muted:#a3a9b4; --rule:#343a45;
+  --ink:#9dbfe6;
+  --client:#e3a84a; --client-bg:#3a2d16;
+  --firm:#6fb0e0;   --firm-bg:#1a2f44;
+  --third:#b3abd0;  --third-bg:#2b2838;
+  --none:#9aa0aa;   --none-bg:#2a2d33;
+  --ae-take:#F0A35A; --ae-take-bg:#3A2A17; --ae-def:#8FB0E6; --ae-def-bg:#1B2538;
+  --ae-ex:#7FCB8A; --ae-ex-bg:#1A2E1E; --ae-check:#6FC5CE; --ae-check-bg:#173033;
+  --ae-warn:#F08077; --ae-warn-bg:#3A1E1C; --ae-tech:#9AA6F0; --ae-tech-bg:#1F2340;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.1;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,6vw,64px);letter-spacing:-.01em}
+h2{font-size:clamp(28px,3.4vw,36px);margin-bottom:12px}
+h3{font-size:22px}
+p{margin:0}
+.updated{margin-top:10px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.lede{max-width:62ch;color:var(--muted);font-size:18px;margin-top:14px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+section{margin-top:56px;padding-top:28px;border-top:1px solid var(--rule)}
+.prose{max-width:66ch}
+.prose p + p{margin-top:12px}
+em{font-family:var(--display);font-style:italic;font-size:1.08em}
+
+/* Chain */
+.chain-scroll{overflow-x:auto;padding-bottom:10px;margin-top:20px}
+.chain{display:flex;align-items:stretch;gap:0;min-width:900px}
+.link{flex:1 1 0;display:flex;align-items:stretch;min-width:0}
+.node{flex:1;background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--c);padding:10px 8px 12px;min-width:0;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .12s}
+.node:hover,.node:focus-visible{transform:translateY(-2px);outline:2px solid var(--ink);outline-offset:1px}
+.node .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.node .t{font-family:var(--body);font-size:13px;font-weight:600;line-height:1.25;margin-top:2px}
+.node .o{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--c);background:var(--cb);padding:2px 6px;border-radius:2px}
+.arrow{display:flex;align-items:center;color:var(--muted);padding:0 2px;font-size:16px;flex:0 0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:14px;font-size:14px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;background:var(--c);margin-right:7px;vertical-align:-1px}
+.client{--c:var(--client);--cb:var(--client-bg)} .firm{--c:var(--firm);--cb:var(--firm-bg)} .third{--c:var(--third);--cb:var(--third-bg)} .none{--c:var(--none);--cb:var(--none-bg)}
+
+/* View switch */
+.switch{display:inline-flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-top:18px}
+.switch button{font:inherit;font-size:14px;padding:7px 14px;background:var(--paper);color:var(--muted);border:0;cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.switch button:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:20px}
+.card{background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--c);padding:16px 18px 18px;min-width:0;scroll-margin-top:16px}
+.card.flash{outline:2px solid var(--ink)}
+.card header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.card h3{margin-top:2px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;margin:14px 0 0;font-size:14.5px}
+dt{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px;white-space:nowrap}
+dd{margin:0;min-width:0}
+.pill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--c);background:var(--cb);padding:2px 7px;border-radius:2px}
+.mode{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-left:6px;border:1px solid currentColor}
+.mode.does{color:var(--firm)} .mode.watches{color:var(--client)}
+.note{margin-top:12px;font-size:14px;color:var(--muted);border-left:2px solid var(--rule);padding-left:10px}
+
+/* Table */
+.tablewrap{overflow-x:auto;margin-top:20px;border:1px solid var(--rule);background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:960px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--bg);position:sticky;top:0}
+td:first-child{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+/* AE boxes: a solid tab names the reading mode; body text stays in page ink */
+.box{position:relative;border:1.5px solid var(--c);background:var(--cb);border-radius:4px;padding:30px 18px 16px;margin-top:28px;max-width:72ch;min-width:0}
+.box::before{content:attr(data-label);position:absolute;top:-14px;left:14px;background:var(--c);color:#fff;font-family:var(--body);font-size:13px;font-weight:600;letter-spacing:.02em;padding:4px 12px;border-radius:3px}
+.box.take{--c:var(--ae-take);--cb:var(--ae-take-bg)} .box.def{--c:var(--ae-def);--cb:var(--ae-def-bg)}
+.box.ex{--c:var(--ae-ex);--cb:var(--ae-ex-bg)} .box.check{--c:var(--ae-check);--cb:var(--ae-check-bg)}
+.box.warn{--c:var(--ae-warn);--cb:var(--ae-warn-bg)} .box.tech{--c:var(--ae-tech);--cb:var(--ae-tech-bg)}
+.box p + p{margin-top:8px}
+.way.box{max-width:none;margin-top:0;background:var(--cb)}
+.keybox{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;font-size:13px;color:var(--muted)}
+.keybox span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--c);margin-right:6px;vertical-align:-1px}
+.k-take{--c:var(--ae-take)} .k-def{--c:var(--ae-def)} .k-ex{--c:var(--ae-ex)} .k-check{--c:var(--ae-check)} .k-warn{--c:var(--ae-warn)} .k-tech{--c:var(--ae-tech)}
+
+/* DIY */
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px 18px;margin-top:34px}
+.way{background:var(--paper);border:1px solid var(--rule);padding:18px 20px;min-width:0}
+.way h3{margin-bottom:8px}
+.way .sub{font-size:14px;color:var(--muted);margin-bottom:12px}
+ol{margin:0;padding-left:22px;font-size:14.5px}
+li + li{margin-top:7px}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.sw{font-family:var(--mono);font-size:11px;padding:6px 8px;border-radius:2px;color:var(--fg)}
+.sw.y{background:#f6e27a} .sw.p{background:#f7a8c4} .sw.b{background:#9fd3f0} .sw.g{background:#b7e3a1} .sw.o{background:#f9c58b} .sw.w{background:#ffffff;border:1px solid #ccc;color:#1d2430} .sw.v{background:#dcc9f5;color:#1d2430}
+.sw.w,.sw.y,.sw.p,.sw.b,.sw.g,.sw.o{color:#1d2430}
+
+/* Copy out */
+.copyrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.btn{font:inherit;font-size:14px;padding:8px 14px;background:var(--ink);color:var(--bg);border:0;border-radius:3px;cursor:pointer}
+.btn.quiet{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.status{font-size:14px;color:var(--muted)}
+textarea{width:100%;min-height:160px;margin-top:12px;font-family:var(--mono);font-size:12px;background:var(--paper);color:var(--fg);border:1px solid var(--rule);padding:10px;resize:vertical}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--rule);font-size:14px;color:var(--muted);max-width:66ch}
+footer p + p{margin-top:8px}
+@media (prefers-reduced-motion: reduce){ .node{transition:none} }
+
+/* Inside Stage 2: two parallel lanes, steps run downward */
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px;align-items:start}
+@media (max-width:760px){.lanes{grid-template-columns:1fr}}
+.lane{background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--ink);padding:14px 14px 16px;min-width:0}
+.lane > header .n{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lane > header h3{margin-top:2px}
+.lane > header p{font-size:14px;color:var(--muted);margin-top:6px}
+.steps{list-style:none;margin:14px 0 0;padding:0}
+.steps > li{margin:0}
+.steps > li + li{margin-top:0}
+.step{border:1px solid var(--rule);border-left:4px solid var(--c);background:var(--bg);padding:9px 11px 10px;min-width:0}
+.step .id{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.step .t{font-weight:600;font-size:14.5px;line-height:1.3;margin-top:1px}
+.step .d{font-size:13.5px;color:var(--muted);margin-top:4px}
+.step .who{display:inline-block;margin-top:7px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--c);background:var(--cb);padding:2px 6px;border-radius:2px}
+.step.gate{border-color:var(--ae-take);border-left-color:var(--ae-take);background:var(--ae-take-bg)}
+.step.gate .t::before{content:"◆ ";color:var(--ae-take)}
+.handoff{font-family:var(--mono);font-size:11px;color:var(--muted);padding:5px 0 5px 14px;border-left:2px dashed var(--rule);margin-left:16px}
+.handoff::before{content:"↓ ";color:var(--ink)}
+.baton{margin:8px 0;padding:9px 12px;border:2px solid var(--ae-take);background:var(--ae-take-bg);font-size:13.5px;border-radius:3px}
+.baton strong{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ae-take)}
+.loop{margin-top:7px;font-size:13px;color:var(--ae-warn);}
+.loop::before{content:"↺ ";font-weight:700}
+.outcomes{list-style:none;margin:8px 0 0;padding:0;font-size:13.5px}
+.outcomes li{display:grid;grid-template-columns:1fr;gap:1px;padding:6px 0;border-top:1px dashed var(--rule)}
+.outcomes .go{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);padding-left:12px}
+.outcomes .go.toA{color:var(--ae-take);font-weight:600}
+.r-admin{--c:var(--third);--cb:var(--third-bg)} .r-cpa{--c:var(--firm);--cb:var(--firm-bg)} .r-client{--c:var(--client);--cb:var(--client-bg)} .r-bot{--c:var(--ae-tech);--cb:var(--ae-tech-bg)}
+.qc{margin-top:7px;font-size:13px;color:var(--ae-check)}
+.qc::before{content:"✓ QC: ";font-weight:700}
+.node.static{cursor:default}
+.node.static:hover{transform:none;outline:none}
+.joins{margin-top:18px;background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--ae-take);padding:14px 16px}
+.joins h3{font-size:20px}
+.joins ul{margin:8px 0 0;padding-left:20px;font-size:14.5px}
+.joins li + li{margin-top:5px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Tax Return Preparation Workflow</h1>
+  <p class="updated" id="updated">Last updated:</p>
+
+  <section id="chain" style="margin-top:36px;border-top:0;padding-top:0">
+    <h2>Process Map</h2>
+    <p class="prose" style="color:var(--muted)">Click stage 1, 2 or 3 to jump to its section.</p>
+    <div class="chain-scroll"><div class="chain" id="chainRow"></div></div>
+    <div class="legend">
+      <span class="client">Client owns the delay</span>
+      <span class="firm">Firm owns the delay</span>
+      <span class="third">Software or USPS</span>
+    </div>
+  </section>
+
+  <section id="stage1">
+    <h2>Stage 1 - Engagement</h2>
+    <p class="prose">Assigned to Maeghan Gershey 2026-10-25</p>
+  </section>
+
+  <section id="stage2">
+    <h2>Stages 2, 3 (Data Collection, Workpaper Preparation)</h2>
+    <div class="prose" style="color:var(--muted)">
+      <p>Stage 2 requests, collects and organizes the data; stage 3 turns it into workpapers. They run simultaneously, item by item.</p>
+      <p>Stage 2 has two lanes.</p>
+      <ul style="margin:8px 0 0;padding-left:22px">
+        <li>Lane A confirms and updates everything that is visible from last year: P0 and A1 to A13 are stage 2, A14 to A18 are stage 3.</li>
+        <li>Lane B, the Go Fish call, looks for what is not visible and entirely in Stage 2. Each new thing Lane B finds becomes a new item in Lane A.</li>
+      </ul>
+      <p style="margin-top:12px">Stage 3 takes each item as received from the client and processes the data point into the workpapers.</p>
+    </div>
+    <div class="lanes">
+      <article class="lane" id="laneA">
+        <header><div class="n">Lane A · confirm and update</div><h3>Visible from Last Year: Known Knowns, Known Unknowns</h3>
+        <p>This lane identifies "known knowns" and "known unknowns" from the prior year tax return. Everything on the prior year income tax return must be accounted for in 2026: the income item continues to exist with perhaps a different dollar value, or the income item does not exist anymore. Name, address, number of dependents, etc. (the slowly moving items) are also confirmed.</p></header>
+        <ol class="steps" id="stepsA"></ol>
+      </article>
+      <article class="lane" id="laneB">
+        <header><div class="n">Lane B · Go Fish</div><h3>Not Visible from Last Year</h3>
+        <p>Transactions and assets the client did not tell us about, or did not know mattered. Income tax and gift tax. CPA judgment is the point of this lane.</p></header>
+        <ol class="steps" id="stepsB"></ol>
+      </article>
+    </div>
+    <div class="joins">
+      <h3>When Each Stage Ends</h3>
+      <ul>
+        <li><strong>Stage 2A.</strong> Individual items are pushed through Stage 2 all the way to the end of Stage 3 as each item is received from the client. Stage 2 ends when 100% of the data items are received or noted as "not obtained" and why.</li>
+        <li><strong>Stage 2B.</strong> This is complete when the CPA has had a live call with the client and has gone through the entire Go Fish questionnaire, receiving either a "does not apply" answer or discovering a new item to add to Lane A for data collection and verification.</li>
+        <li><strong>Stage 3.</strong> Workpapers are populated incrementally as data items are received. Stage 3 is complete when Stage 2A and Stage 2B are both complete and all data items extracted from the client are in the workpapers or marked irrelevant, and the workpapers have been reviewed.</li>
+        <li>At the end of Stage 3, we have workpapers in which every number has been checked by the Preparer and the Reviewer, ready to key into UltraTax.</li>
+        <li>The incremental approach to data acquisition, data entry, and data verification is selected to make the final step quick. If you are waiting on one number on October 13, it's easy to finish the tax return if everything else is entered into UltraTax and has been pre-reviewed.</li>
+      </ul>
+    </div>
+  </section>
+
+
+
+</div>
+
+<script>
+// "Last updated" comes from the file's Last-Modified time, shown in Pacific Time,
+// so it changes by itself whenever this file is saved.
+(function(){
+  const d = new Date(document.lastModified);
+  if (isNaN(d)) return;
+  const f = new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',year:'numeric',month:'long',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+  document.getElementById('updated').textContent = 'Last updated: ' + f.format(d);
+})();
+const STAGES = [
+ {n:1,name:"Engagement",start:"We email the client: do you want us to do your returns this year?",end:"Client signs the engagement agreement and pays.",input:"Last year's client list.",output:"All required engagement documents. A definite roster of who is on the bus. For each client, a Preparer CPA and a Reviewer CPA are designated.",owner:"Client",cls:"client",role:"Admin desk",mode:"Watches",note:"Subroutines for prompt yes, nudged yes, no, and silence. Our side is largely automatable."},
+ {n:2,name:"Data Collection",start:"We are officially hired and may ask for information.",end:"Every Lane A item is received and saved, or closed as “not obtained”; Lane B is closed: every Go Fish question answered, every new ticket resolved, summary acknowledged by the client.",input:"Output of stage 1.",output:"Immaculately organized original data files on the server, handed item by item to stage 3; the client-acknowledged Go Fish summary; a memo for every researched position.",owner:"Client",cls:"client",role:"Preparer CPA",mode:"Watches",note:"The Preparer CPA owns this stage and watches it. Lane A steps P0 to A13 and all of Lane B (Go Fish) belong here. See “Stages 2, 3 (Data Collection, Workpaper Preparation)” above. The CPA owns the Go Fish call because the CPA can read hesitation. Research issues are solved here, in parallel, never at final review."},
+ {n:3,name:"Workpapers Complete",start:"Runs in parallel with stage 2: each item enters stage 3 as soon as it is cleaned and saved on the server.",end:"Every item is in the workpaper, checked by the Preparer and the Reviewer, and closed.",input:"Each cleaned and saved item from stage 2, one at a time.",output:"Well-organized workpapers, every number verified against its source document, ready for UltraTax entry.",owner:"Firm",cls:"firm",role:"Preparer",mode:"Does",note:"Lane A steps A14 to A18. The baton passes once per item, not once per return. A Preparer check can send an item back to stage 2 for a client reminder. The gap between the last item received and the last item closed is firm time: measure it."},
+ {n:4,name:"Unreviewed Return",start:"Complete workpapers. UltraTax entry starts here.",end:"Draft return the preparer has checked for typos and sanity.",input:"Workpapers.",output:"An unreviewed tax return.",owner:"Firm",cls:"firm",role:"Preparer",mode:"Does",note:"A keypunch job from the workpapers into UltraTax, plus a preparer-side quality sweep."},
+ {n:5,name:"Reviewed Return",start:"Reviewer has workpapers and the unreviewed return.",end:"Reviewer agrees everything in the workpapers landed in the right place.",input:"Unreviewed return plus workpapers.",output:"A reviewed tax return.",owner:"Firm",cls:"firm",role:"Reviewer",mode:"Does",note:"Not the reviewer's job to question completeness or hunt unknown unknowns. That was stage 2. Not the reviewer's job to re-verify numbers against the source documents either: every workpaper number carries the tracking number of its source page and was checked in stage 3. The reviewer relies on the workpaper; no redundant review."},
+ {n:6,name:"Signed Return",start:"Reviewed return received.",end:"Client and preparer have signed, physically or digitally.",input:"Reviewed return.",output:"A signed tax return.",owner:"Client",cls:"client",role:"Admin desk",mode:"Watches",note:""},
+ {n:7,name:"Filed Return",start:"Signed return in hand.",end:"Filed electronically or on paper.",input:"Signed return.",output:"A filed tax return.",owner:"Firm",cls:"firm",role:"Admin desk",mode:"Does",note:""},
+ {n:8,name:"Confirmed Filed",start:"We know the return was filed.",end:"E-file acceptance, or proof of mailing plus the signed certified-mail receipt.",input:"Filed return.",output:"Proof the IRS received it. Needed far more often than it should be.",owner:"Software or USPS",cls:"third",role:"Admin desk",mode:"Watches",note:""},
+ {n:9,name:"Close the File",start:"Proof of filing in hand.",end:"File closed; next year's client follow-up loop started.",input:"Proof of filing.",output:"Four scheduled client conversations in the coming year, for maintenance and nurture.",owner:"Firm",cls:"firm",role:"Admin desk",mode:"Does",note:"Final review of the file, clean out drafts and messes."}
+];
+
+const chain = document.getElementById('chainRow');
+STAGES.forEach((s,i)=>{
+  const link = document.createElement('div'); link.className='link';
+  const target = {1:'stage1',2:'stage2',3:'stage2'}[s.n];
+  const b = document.createElement(target?'button':'div'); b.className='node '+s.cls+(target?'':' static');
+  if(target){ b.type='button'; b.addEventListener('click',()=>document.getElementById(target).scrollIntoView({behavior:'smooth',block:'start'})); }
+  b.innerHTML = `<div class="n">Stage ${s.n}</div><div class="t">${s.name}</div><span class="o">${s.owner.split(' ')[0]}</span>`;
+  link.appendChild(b);
+  if(i<STAGES.length-1){ const a=document.createElement('div'); a.className='arrow'; a.textContent='→'; link.appendChild(a); }
+  chain.appendChild(link);
+});
+
+
+
+const LANE_A = [
+ {id:"P0",st:2,t:"Build “Baseline of Truth” SKILL.md",d:"Create a SKILL.md that reads a prior-year return file and writes the Baseline of Truth report in a fixed format.",who:"Preparer CPA + Project Leader",r:"cpa",to:"Admin desk",qc:"Tested on clients the CPA knows well. Approved when it misses nothing. Every later change records who changed it and why."},
+ {id:"A1",st:2,t:"Baseline Report (“Baseline of Truth”)",d:"Admin downloads last year's NetDocs matter as a zip (return, workpapers, data files) and gives it to the bot. The bot lists every item on last year's return and FBAR, including items with no income (FBAR accounts, dormant entities, PFICs, trusts): last year's amount, the return line, the source document. It carries forward every memo on an unusual position, for consistency. One Baseline item per account, entity or source.",who:"Bot + Admin desk",r:"bot",to:"Admin desk or Bot"},
+ {id:"A2",st:2,t:"Baseline of Truth Report: Quality Control",d:"Review the Baseline of Truth report for completeness. Purpose: eliminate “I should have asked about this, but I didn't.”",who:"Admin desk or Bot",r:"admin",gate:true,to:"Preparer CPA",qc:"Method to be decided."},
+ {id:"A3",st:2,t:"Generate Request List",d:"CPA looks at the Baseline of Truth Report and decides what NOT to ask the client to deliver for the current tax return. Purpose: eliminate questions that we know for a fact are no longer applicable. Asking for something that doesn't apply makes the client think the CPA isn't paying attention.",who:"Preparer CPA",r:"cpa",to:"Admin desk or Bot"},
+ {id:"A4",st:2,t:"Quality Control Request List (Admin/Bot)",d:"Every difference between the Baseline of Truth Report and the Request List is identified and there is a written reason for why something was listed on the Baseline of Truth Report and was not included in the Request List.",who:"Admin desk or Bot",r:"admin",to:"Preparer CPA"},
+ {id:"A5",st:2,t:"Request List: Quality Control Review (CPA)",d:"The CPA reviews what the Admin or Bot did, and signs off. Now we know exactly what we are going to ask the client to provide.",who:"Preparer CPA",r:"cpa",gate:true,to:"Bot + Admin desk"},
+ {id:"A6",st:2,t:"Create the Drop Zone",d:"One drop zone per Request List item, with the questionnaire and a progress meter that climbs to 100%. A watcher checks every drop zone and sends each new file to A8 at once. Then the client is told to start uploading. Until another tool is selected, use ShareFile.",who:"Bot + Admin desk",r:"bot",to:"Client",qc:"Number of drop zones = number of Request List items. One test upload reaches A8."},
+ {id:"A7",st:2,t:"Client Delivers Data Items to Drop Zone",d:"One item at a time, to its drop zone. Email, text and calls also count. Each item shows last year's figure and accepts only three answers: the new document; closed (get a date from the client and accept the client's assurance unless otherwise indicated; see later stages); open with no income (e.g., an account still sends its statement, for the FBAR balances). Third parties send the items they hold, with the client's permission.",who:"Client",r:"client",to:"Bot",loop:"Follow-up loops exist, with standard escalation cycle: email, text message, phone call. Methods exist for capturing data from phone calls, emails, text messages from client (e.g., CPA makes a note about something learned in a call with the client in a text file and uploads it to ShareFile)."},
+ {id:"A8",st:2,t:"Tracking Number Assigned to Document",d:"Every file that arrives, from any channel, gets a tracking number first. The original is kept unchanged.",who:"Bot",r:"bot",to:"Bot"},
+ {id:"A9",st:2,t:"Document Cleanup",d:"Orient the pages. Split a file that holds several separate documents.",who:"Bot",r:"bot",to:"Bot"},
+ {id:"A10",st:2,t:"Document Readability Check",d:"Readable and complete, or rejected and a cleaner copy is requested (A13).",who:"Bot; Admin decides",r:"bot",to:"Bot"},
+ {id:"A11",st:2,t:"Match Document Contents to Request List Item",d:"Check off the Request List item the document answers. A document we did not ask for is flagged to the CPA.",who:"Bot; Admin confirms",r:"bot",to:"Bot"},
+ {id:"A12",st:2,t:"Save Document to Server",d:"Stamp each page with the tracking number, name the file, save it to the client's folder.",who:"Bot",r:"bot",to:"Bot"},
+ {id:"A13",st:2,t:"Confirmation Email to Client",d:"What we have, what we still need. A request for a cleaner copy when a document failed the readability check.",who:"Bot",r:"bot",to:"Bot + Admin desk"},
+ {id:"A14",st:3,t:"Extract Individual Data Item to the Workpaper",d:"Find relevant data items in the data file and input to the correct workpaper. The workpaper shows the tracking number for the source of the input value.",who:"Bot + Admin desk",r:"bot",to:"Preparer CPA"},
+ {id:"A15",st:3,t:"Preparer Check Relevant Data in Workpapers",d:"Preparer CPA checks that relevant data transfer from source document to workpaper is correct.",who:"Preparer CPA",r:"cpa",to:"Preparer CPA"},
+ {id:"A16",st:3,t:"Mark Irrelevant Data in Data File",d:"For every data item in a particular data file received from the client, eyeball it and mark it as not needed for income tax return preparation.",who:"Preparer CPA",r:"cpa",to:"Reviewer CPA"},
+ {id:"A17",st:3,t:"Reviewer Check",d:"Reviewer CPA confirms data inclusions are accurate (A14) and data exclusions are accurate (A16).",who:"Reviewer CPA",r:"cpa",to:"Preparer CPA"},
+ {id:"A18",st:3,t:"Close the Item",d:"Received, complete, in the workpaper and checked by both CPAs.",who:"Preparer CPA",r:"cpa",gate:true,next:{st:4,done:"Once per return, when every item is closed and the workpapers are complete.",to:"Preparer",start:"UltraTax entry starts."}}
+];
+const LANE_B = [
+ {id:"B1",t:"Build the Go Fish Checklist",d:"The script for the call. Questions are asked whether or not the item was reported before.",who:"Preparer CPA",r:"cpa",to:"Admin desk"},
+ {id:"B2",t:"Get Consent to Record",d:"In writing before the call, confirmed at the start of the call. The transcription vendor must be named in the §7216 Consent.",who:"Admin desk",r:"admin",to:"Preparer CPA"},
+ {id:"B3",t:"Go Fish Call, in January",d:"Early, because every finding starts a new chase in Lane A. The CPA annotates the checklist on screen in front of the client; the bot takes notes.",who:"Preparer CPA",r:"cpa",to:"Preparer CPA"},
+ {id:"B4",t:"Write an Answer for Every Question",d:"The CPA writes the answers. “No” is an answer. “Not sure” stays open until it is resolved.",who:"Preparer CPA",r:"cpa",to:"Preparer CPA"},
+ {id:"B5",t:"Route Each Answer",who:"Preparer CPA",r:"cpa",to:"Preparer CPA",outcomes:[
+   ["Does not exist in the client's life","Recorded",false],
+   ["Exists","New item in Lane A",true],
+   ["Not sure: more data is needed","New item in Lane A",true],
+   ["Not sure: research is needed","Research queue, memo to file",false],
+   ["Problem in prior years","Separate cleanup matter, own engagement and price",false],
+   ["New filing, e.g. Form 709 or 3520","Price Change Notice",false]
+ ]},
+ {id:"B6",t:"Send the Go Fish Summary",d:"“We asked you all of these questions; here are your answers; here is what we decided, with your participation and consent.”",who:"Preparer CPA",r:"cpa",to:"Client"},
+ {id:"B7",t:"Client Acknowledges the Summary",d:"In writing. This is the evidence for every “do nothing” decision.",who:"Client",r:"client",to:"Preparer CPA"},
+ {id:"B8",t:"Close Lane B",d:"Every question answered, every new ticket resolved: folded into this year's return, or a memo in the workpapers that records the decision to do nothing.",who:"Preparer CPA",r:"cpa",gate:true}
+];
+function renderLane(el, steps){
+  el.innerHTML = steps.map((s,i)=>{
+    const out = s.outcomes ? '<ul class="outcomes">'+s.outcomes.map(o=>`<li><span>${o[0]}</span><span class="go${o[2]?' toA':''}">→ ${o[1]}</span></li>`).join('')+'</ul>' : '';
+    const box = `<li><div class="step r-${s.r}${s.gate?' gate':''}"><div class="id">${s.id}${s.st?' · stage '+s.st:''}</div><div class="t">${s.t}</div>${s.d?`<div class="d">${s.d}</div>`:''}${out}<span class="who">${s.who}</span>${s.qc?`<div class="qc">${s.qc}</div>`:''}${s.loop?`<div class="loop">${s.loop}</div>`:''}</div></li>`;
+    const nx = steps[i+1];
+    const baton = nx && s.st && nx.st && nx.st!==s.st;
+    const line = `<li class="handoff">${s.who===s.to?'stays with '+s.to:'hands to '+s.to}</li>`;
+    const hand = (i<steps.length-1 && s.to) ? (baton ? `<li class="baton"><strong>Stage ${s.st} Complete</strong>Once per item, when the item is cleaned and saved.</li>`+line+`<li class="baton"><strong>Stage ${nx.st} Commences</strong></li>` : line) : '';
+    const end = (i===steps.length-1 && s.next) ? `<li class="baton"><strong>Stage ${s.st} Complete</strong>${s.next.done}</li><li class="handoff">hands to ${s.next.to}</li><li class="baton"><strong>Stage ${s.next.st} Commences</strong>${s.next.start}</li>` : '';
+    return box+hand+end;
+  }).join('');
+}
+renderLane(document.getElementById('stepsA'), LANE_A);
+renderLane(document.getElementById('stepsB'), LANE_B);
+</script>
+
+</body>
+</html>

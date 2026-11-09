@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About This Workflow</title>
+<link rel="stylesheet" href="../assets/site.css?v=5">
+</head>
+<body data-stage="0" data-root="../">
+<header class="topbar"><div class="in"><span class="brand">Tax Return Preparation Workflow</span><nav aria-label="Main"><a href="../">Home</a><a href="./" aria-current="page">About</a></nav></div></header>
+
+<div class="wrap">
+  <h1>About This Workflow</h1>
+  <p class="updated" id="updated">Last updated:</p>
+  <p class="lede">The goal: the CPA does only the high-value tasks. Administrative staff or a machine does all other tasks. This page tells how we design the workflow to get there.</p>
+
+  <section id="idea">
+    <h2>The Idea: A Pin Factory</h2>
+    <div class="prose">
+      <p>Adam Smith described a pin factory. One worker who makes a complete pin makes few pins each day. Ten workers who each do one small step make thousands of pins each day.</p>
+      <p>Today our CPAs are expensive artisans who also do factory-floor tasks. We break each stage into smaller and smaller tasks. Then we give each task to the least expensive person or machine that can do it correctly.</p>
+    </div>
+  </section>
+
+  <section id="levels-of-detail">
+    <h2>Four Levels of Detail</h2>
+    <div class="tablewrap" style="max-width:820px"><table style="min-width:0">
+      <thead><tr><th>Level</th><th>What it shows</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>The nine stages</td><td>Done (home page)</td></tr>
+        <tr><td>1</td><td>The steps in each stage</td><td>Stages 1, 2, 3 done. Stages 4 to 9 not done.</td></tr>
+        <tr><td>2</td><td>Task cards: one task, one person, one result</td><td>Started: the cards on the Stage 1, 2 and 3 pages</td></tr>
+        <tr><td>3</td><td>Work instructions: screens, templates, clicks</td><td>Not started</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box take" data-label="Rule">
+      <p>Finish Level 1 for all nine stages before Level 2 goes deep. If one stage goes deep first, the stages after it can change it.</p>
+    </div>
+  </section>
+
+  <section id="card">
+    <h2>One Card for Every Task</h2>
+    <p class="prose">Every task uses the same card. The template comes from Maeghan's Stage 1 map. The output of each task is the input of the next task.</p>
+    <div class="tablewrap" style="max-width:820px"><table style="min-width:0">
+      <thead><tr><th>Field</th><th>What it says</th></tr></thead>
+      <tbody>
+        <tr><td>Input</td><td>What the task starts with. It is the output of the task before it.</td></tr>
+        <tr><td>Action</td><td>What the worker does.</td></tr>
+        <tr><td>Who</td><td>Who does the task today.</td></tr>
+        <tr><td>Tool</td><td>The software or document the worker uses.</td></tr>
+        <tr><td>Output</td><td>What the task produces.</td></tr>
+        <tr><td>Level</td><td>J, R, M or Client (see below).</td></tr>
+        <tr><td>Done test</td><td>How a person can see that the task is complete and correct.</td></tr>
+        <tr><td>Time</td><td>Minutes for each occurrence.</td></tr>
+        <tr><td>Exception</td><td>What the worker does when the case does not fit the rule.</td></tr>
+        <tr><td>Status</td><td>Draft, Reviewed, Tested or Standard (see below).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="levels">
+    <h2>Sort Every Task with One Test</h2>
+    <p class="prose">Ask this question about each task: <em>can I write the rule so that a new employee with no tax knowledge gets the same answer as the CPA?</em></p>
+    <div class="levelkey" style="flex-direction:column;align-items:flex-start;gap:10px;margin-top:18px">
+      <span><span class="lv lv-j">J · Judgment</span>&nbsp; No. Only the CPA does it.</span>
+      <span><span class="lv lv-r">R · Rule</span>&nbsp; Yes. Administrative staff do it with a checklist.</span>
+      <span><span class="lv lv-m">M · Machine</span>&nbsp; Yes, and all inputs are digital. A bot is a candidate.</span>
+      <span><span class="lv lv-c">Client</span>&nbsp; The client does it. We can make it easy, but we do not control it.</span>
+    </div>
+    <div class="box take" data-label="The pin-factory rule">
+      <p>Split a task until each part has one level only. If a task mixes J and R, make two tasks. Many CPA tasks today are 10% judgment and 90% rule. When we split them, the CPA keeps the 10%.</p>
+    </div>
+  </section>
+
+  <section id="exceptions">
+    <h2>Exceptions Go to the CPA</h2>
+    <div class="prose">
+      <p>A factory line works for the standard case. Do not try to write a rule for every unusual case. Each task card has an exit: “If X, send to the CPA.”</p>
+      <p>The CPA's work then has two parts: the J tasks and the exceptions. Count the exceptions. When one type of exception occurs many times, write a rule for it. It then becomes an R task.</p>
+    </div>
+  </section>
+
+  <section id="touch-map">
+    <h2>The CPA Touch Map</h2>
+    <div class="prose">
+      <p>The high-level view is a grid. The columns are the nine stages. The rows are CPA, Admin, Bot and Client. Each cell shows the number of tasks, and the minutes when we know them.</p>
+      <p>Today the CPA row is full. The goal is a CPA row that is almost empty, with only the J tasks and the review gates. The stage with the most CPA minutes is the next stage to work on.</p>
+    </div>
+    <div class="box check" data-label="Status">
+      <p>Not built yet. It will go on the home page, under the stage boxes.</p>
+    </div>
+  </section>
+
+  <section id="status">
+    <h2>Manage the Project with a Status on Each Card</h2>
+    <ol class="prose" style="font-size:16px">
+      <li><strong>Draft:</strong> written.</li>
+      <li><strong>Reviewed:</strong> the person who will do the task agrees that the card is correct.</li>
+      <li><strong>Tested:</strong> used on one real return.</li>
+      <li><strong>Standard:</strong> used on all returns.</li>
+    </ol>
+    <p class="prose" style="margin-top:12px">The weekly review asks two questions: which cards moved, and which cards are stopped?</p>
+  </section>
+
+  <section id="cautions">
+    <h2>Two Cautions</h2>
+    <div class="box warn" data-label="Each split adds a handoff">
+      <p>A handoff adds a queue and a chance to lose the item. Split a task only if the time saved is more than the cost of the handoff. Adam Smith's workers stood next to each other. Our workers and bots do not.</p>
+    </div>
+    <div class="box warn" data-label="Test before the season">
+      <p>Use 3 to 5 simple returns in December and January. A task card is a guess until a real return goes through it.</p>
+    </div>
+  </section>
+
+  <section id="data">
+    <h2>From Web Pages to a Database</h2>
+    <div class="prose">
+      <p>Today the cards are written in files that make these web pages. That works for dozens of cards. It will not work for hundreds.</p>
+      <p>The next form is one data source that holds every stage, step and card. Every page and the CPA touch map will be made from it.</p>
+    </div>
+  </section>
+</div>
+
+<script src="../assets/stages.js?v=5"></script>
+</body>
+</html>

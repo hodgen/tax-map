@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stage 2: Data Collection</title>
-<link rel="stylesheet" href="../assets/site.css?v=4">
+<link rel="stylesheet" href="../assets/site.css?v=5">
 </head>
 <body data-stage="2" data-root="../">
+<header class="topbar"><div class="in"><span class="brand">Tax Return Preparation Workflow</span><nav aria-label="Main"><a href="../">Home</a><a href="../about/">About</a></nav></div></header>
 
 <div class="wrap">
-  <p class="crumb"><a href="../">Home</a> · Stage 2 of 9</p>
+  <p class="stageof">Stage 2 of 9</p>
   <h1 id="stageTitle">Stage 2: Data Collection</h1>
   <p class="updated" id="updated">Last updated:</p>
 
@@ -24,20 +25,28 @@
         <li>Lane A confirms and updates everything that is visible from last year. Steps P0 and A1 to A13 are stage 2. Steps A14 to A18 are stage 3.</li>
         <li>Lane B, the Go Fish call, looks for what is not visible. It is entirely in stage 2. Each new thing Lane B finds becomes a new item in Lane A.</li>
       </ul>
+      <p style="margin-top:10px">Steps and actions are Phil's. Inputs, outputs, tools, level, done test, exception and notes are first guesses by Claude (2026-11-08). Correct them.</p>
     </div>
-    <div class="lanes">
-      <article class="lane" id="laneA">
-        <header><div class="n">Lane A · confirm and update</div><h3>Visible from Last Year: Known Knowns, Known Unknowns</h3>
-        <p>This lane identifies "known knowns" and "known unknowns" from the prior year tax return. Everything on the prior year income tax return must be accounted for in 2026: the income item continues to exist with perhaps a different dollar value, or the income item does not exist anymore. Name, address, number of dependents, etc. (the slowly moving items) are also confirmed.</p></header>
-        <ol class="steps" id="stepsA"></ol>
-      </article>
-      <article class="lane" id="laneB">
-        <header><div class="n">Lane B · Go Fish</div><h3>Not Visible from Last Year</h3>
-        <p>Transactions and assets the client did not tell us about, or did not know mattered. Income tax and gift tax. CPA judgment is the point of this lane.</p></header>
-        <ol class="steps" id="stepsB"></ol>
-      </article>
-    </div>
-    <div class="joins">
+    <div id="levelKey"></div>
+    <nav class="tabs" aria-label="Lanes"><a href="#laneA">Lane A: Confirm and update</a><a href="#laneB">Lane B: Go Fish</a><a href="#ends">When Stage 2 ends</a></nav>
+  </section>
+
+  <section id="laneA">
+    <p class="eyebrow">Lane A · confirm and update</p>
+    <h2>Visible from Last Year: Known Knowns, Known Unknowns</h2>
+    <p class="prose" style="color:var(--muted)">This lane identifies "known knowns" and "known unknowns" from the prior year tax return. Everything on the prior year income tax return must be accounted for in 2026: the income item continues to exist with perhaps a different dollar value, or the income item does not exist anymore. Name, address, number of dependents, etc. (the slowly moving items) are also confirmed.</p>
+    <ol class="chain1" id="chainA"></ol>
+  </section>
+
+  <section id="laneB">
+    <p class="eyebrow">Lane B · Go Fish</p>
+    <h2>Not Visible from Last Year</h2>
+    <p class="prose" style="color:var(--muted)">Transactions and assets the client did not tell us about, or did not know mattered. Income tax and gift tax. CPA judgment is the point of this lane.</p>
+    <ol class="chain1" id="chainB"></ol>
+  </section>
+
+  <section id="ends">
+    <div class="joins" style="margin-top:0">
       <h3>When Stage 2 Ends</h3>
       <ul>
         <li><strong>Stage 2A.</strong> Individual items are pushed through Stage 2 all the way to the end of Stage 3 as each item is received from the client. Stage 2 ends when 100% of the data items are received or noted as "not obtained" and why.</li>
@@ -49,14 +58,24 @@
   <nav class="pager" id="pager"></nav>
 </div>
 
-<script src="../assets/stages.js?v=4"></script>
-<script src="../assets/lanes.js?v=4"></script>
+<script src="../assets/stages.js?v=5"></script>
+<script src="../assets/cards.js?v=5"></script>
 <script>
-renderLane(document.getElementById('stepsA'), LANE_A.filter(s=>s.st===2), {
-  head: `<li class="baton"><strong>From Stage 1</strong>All engagement documents in hand. <a href="../1-engagement/">Stage 1</a></li><li class="handoff">hands to Preparer CPA</li>`,
-  tail: `<li class="handoff">hands to Bot + Admin desk</li><li class="baton"><strong>Stage 2 Complete for This Item</strong>Once per item, when the item is cleaned and saved. The item continues in <a href="../3-workpapers/">Stage 3</a> at A14.</li>`
-});
-renderLane(document.getElementById('stepsB'), LANE_B);
+document.getElementById('levelKey').innerHTML = levelKey();
+renderCards(document.getElementById('chainA'), [
+  {bound:{lab:"Stage input", text:"All engagement documents in hand", sub:'Output of <a href="../1-engagement/">Stage 1</a>: we are officially hired and may ask for information.'}},
+  {seam:'hands off'},
+  ...CARDS.s2A,
+  {seam:'output becomes input'},
+  {bound:{lab:"Item output → Stage 3 input", text:"Stamped, named document in the client's folder", sub:'Once per item. The item continues in <a href="../3-workpapers/">Stage 3</a> at A14.'}}
+]);
+renderCards(document.getElementById('chainB'), [
+  {bound:{lab:"Lane input", text:"Approved Request List (A5)", sub:"The Go Fish call takes place in January."}},
+  {seam:'hands off'},
+  ...CARDS.s2B,
+  {seam:'new items found here go to Lane A as new Request List items'},
+  {bound:{lab:"Lane output", text:"Lane B closed", sub:"Every question answered; every new ticket resolved or recorded in a memo."}}
+]);
 </script>
 </body>
 </html>

@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stage 1: Engagement</title>
-<link rel="stylesheet" href="../assets/site.css?v=4">
+<link rel="stylesheet" href="../assets/site.css?v=5">
 </head>
 <body data-stage="1" data-root="../">
+<header class="topbar"><div class="in"><span class="brand">Tax Return Preparation Workflow</span><nav aria-label="Main"><a href="../">Home</a><a href="../about/">About</a></nav></div></header>
 
 <div class="wrap">
-  <p class="crumb"><a href="../">Home</a> · Stage 1 of 9</p>
+  <p class="stageof">Stage 1 of 9</p>
   <h1 id="stageTitle">Stage 1: Engagement</h1>
   <p class="updated" id="updated">Last updated:</p>
 
@@ -23,6 +24,8 @@
       <span class="firm">Firm's clock is running</span>
       <span class="client">Client's clock is running</span>
     </div>
+    <div id="levelKey"></div>
+    <p class="prose" style="color:var(--muted);margin-top:10px">Steps, inputs, actions, tools and outputs are Maeghan's. Level, done test, exception and notes are first guesses by Claude (2026-11-08). Correct them.</p>
     <nav class="tabs" aria-label="Paths"><a href="#pathA">Path A: Prompt yes</a><a href="#pathB">Path B: Slow yes</a></nav>
   </section>
 
@@ -61,48 +64,23 @@
   <nav class="pager" id="pager"></nav>
 </div>
 
-<script src="../assets/stages.js?v=4"></script>
+<script src="../assets/stages.js?v=5"></script>
+<script src="../assets/cards.js?v=5"></script>
 <script>
 const START = {lab:"Stage input", text:"Last year's client list", sub:"Clients the firm prepared returns for last year."};
 const END = {lab:"Stage output → Stage 2 input", text:"All engagement documents in hand: signed LSA, deposit, identity proof, KYC information, signed POA", sub:"Stage 2 starts here: we are officially hired and may ask for information."};
-const STEPS = [
- {name:"Review the list with the CPAs", input:"Last year's client list", action:"Send each CPA the project list. Each CPA marks who to contact, who not to contact, and any notes.", who:"Maeghan, then each CPA", tool:"Excel (project list)", output:"Reach-out list with this client marked to contact"},
- {name:"Set the budget", input:"Reach-out list with this client marked to contact", action:"Prepare a budget estimate for this client's returns. William approves it.", who:"Maeghan prepares; William approves", tool:"Excel (reach-out list)", output:"Approved budget quote"},
- {name:"Check contact rules", input:"Approved budget quote", action:"Check the client's Clio record for contact rules.", who:"Maeghan", tool:"Clio", output:"Approved quote with confirmed recipient and contact method"},
- {name:"Send the reach-out email", input:"Approved quote with confirmed recipient and contact method", action:"Email the client: do you want us to prepare your returns this year? Include the quote.", who:"Maeghan", tool:"Nutshell", output:"Reach-out email sent; lead open in the pipeline"},
- {name:"Client says yes", input:"Reach-out email sent; lead open in the pipeline", action:"Client replies promptly and agrees to the quote.", who:"Client", tool:"Email", output:"Written yes from the client", client:true},
- {name:"Prepare the LSA", input:"Written yes from the client", action:"Draft the Legal Services Agreement from the approved quote and the forms in scope.", who:"Maeghan", tool:"LSA template", output:"LSA ready to send"},
- {name:"Send the LSA and deposit request", input:"LSA ready to send", action:"Send the LSA for signature with the deposit request.", who:"Maeghan", tool:"E-signature tool", output:"LSA and deposit request with the client"},
- {name:"Client signs and pays", input:"LSA and deposit request with the client", action:"Client signs the LSA and sends the deposit.", who:"Client", tool:"E-signature tool; trust account", output:"Signed LSA and deposit received", client:true},
- {name:"Open the project", input:"Signed LSA and deposit received", action:"Open the matter in Clio and NetDocuments, and mark the Nutshell lead won.", who:"Maeghan", tool:"Clio, NetDocuments, Nutshell", output:"Open matter in Clio and NetDocuments"},
- {name:"Request identity proof, KYC information, and POA", input:"Open matter in Clio and NetDocuments", action:"Send the KYC request. Ask the client for a passport or government-issued ID. Send Form 2848 for e-signature, prepared from the firm's POA template.", who:"Maeghan", tool:"Email; e-signature tool", output:"Identity, KYC, and POA request with the client"},
- {name:"Client sends ID and KYC information, and signs POA", input:"Identity, KYC, and POA request with the client", action:"Client sends a copy of their ID, returns the KYC information, and signs Form 2848.", who:"Client", tool:"Upload; e-signature tool", output:"All engagement documents in hand", client:true}
-];
-const B = [
- {name:"Wait for a decision", input:"Reach-out email sent, or a reply with no decision", action:"Watch for the client's answer. No decision arrives by the next follow-up date.", who:"Client; Maeghan watches", tool:"Nutshell", output:"No decision by the follow-up date", client:true},
- {name:"Send a follow-up", input:"No decision by the follow-up date", action:"Send a follow-up email that restates the quote and asks for a yes or no. Set the next follow-up date.", who:"Maeghan", tool:"Nutshell", output:"Follow-up sent; next follow-up date set"},
- {name:"Client replies without a decision", input:"Follow-up sent; next follow-up date set", action:"Client acknowledges the email but does not commit, or does not reply.", who:"Client", tool:"Email", output:"A reply with no decision", client:true}
-];
-const B4 = {name:"Client says yes", input:"Follow-up sent; next follow-up date set", action:"After several weeks and one or more follow-ups, the client agrees to the quote.", who:"Client", tool:"Email", output:"Written yes from the client", client:true};
-
-const bound = b => `<li class="bound"><div class="lab">${b.lab}</div><div class="txt">${b.text}</div><div class="sub">${b.sub}</div></li>`;
-const seam = t => `<li class="handoff">${t}</li>`;
-const card = (label,s) => `<li><article class="s1 ${s.client?'client':'firm'}"><header><span class="id">${label}</span><h3>${s.name}</h3><span class="pill">${s.client?'Client':'Firm'}</span></header>
-  <dl><dt>Input</dt><dd>${s.input}</dd><dt>Action</dt><dd>${s.action}</dd><dt>Who</dt><dd>${s.who}</dd><dt>Tool</dt><dd>${s.tool}</dd><dt>Output</dt><dd class="out">${s.output}</dd></dl></article></li>`;
-const toStage2 = `<li class="handoff">hands off to <a href="../2-data-collection/">Stage 2</a></li>`;
-
-let a = bound(START);
-STEPS.forEach((s,i)=>{ a += seam(i===0?'hands off':'output becomes input') + card('Step '+(i+1), s); });
-a += toStage2 + bound(END);
-document.getElementById('chainA').innerHTML = a;
-
-let b = `<li class="same"><strong>Steps 1 to 4: same as Path A.</strong> Output: Reach-out email sent; lead open in the pipeline</li>`;
-B.forEach(s=>{ b += seam('output becomes input') + card('Step B'+(B.indexOf(s)+1), s); });
-b += `<li class="repeat">Back to Step B1. Repeat until the client says yes.</li>`;
-b += seam('when the client says yes after a follow-up') + card('Step B4', B4);
-b += seam('output becomes input') + `<li class="same"><strong>Steps 6 to 11: same as Path A.</strong> Input: Written yes from the client</li>`;
-b += toStage2 + bound(END);
-document.getElementById('chainB').innerHTML = b;
+const toStage2 = {seam:'hands off to <a href="../2-data-collection/">Stage 2</a>'};
+document.getElementById('levelKey').innerHTML = levelKey();
+renderCards(document.getElementById('chainA'), [{bound:START},{seam:'hands off'}, ...CARDS.s1A, toStage2, {bound:END}]);
+const B = CARDS.s1B;
+renderCards(document.getElementById('chainB'), [
+  {same:'<strong>Steps 1 to 4: same as Path A.</strong> Output: Reach-out email sent; lead open in the pipeline'},
+  {seam:'output becomes input'}, B[0], B[1], B[2],
+  {repeat:'Back to Step B1. Repeat until the client says yes.'},
+  {seam:'when the client says yes after a follow-up'}, B[3],
+  {seam:'output becomes input'},
+  {same:'<strong>Steps 6 to 11: same as Path A.</strong> Input: Written yes from the client'},
+  toStage2, {bound:END}]);
 </script>
 </body>
 </html>

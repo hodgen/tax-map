@@ -215,3 +215,22 @@ a.node[aria-current="page"]:hover{transform:none}
 .tabs a{font-family:var(--mono);font-size:12px;padding:5px 10px;border:1px solid var(--ink);color:var(--ink);text-decoration:none;border-radius:3px}
 .tabs a:hover,.tabs a:focus-visible{background:var(--firm-bg)}
 @media (max-width:520px){.s1 dl,.summary dl{grid-template-columns:1fr;gap:2px}.s1 dd,.summary dd{margin-bottom:8px}.s1 .pill{margin-left:0}}
+
+/* Top menu bar, on every page */
+.topbar{background:var(--paper);border-bottom:1px solid var(--rule)}
+.topbar .in{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;padding:10px max(16px,env(safe-area-inset-left,0px))}
+.topbar .brand{font-family:var(--display);font-size:20px;margin-right:auto}
+.topbar nav{display:flex;gap:20px}
+.topbar nav a{font-size:16px;font-weight:600;color:var(--link);text-decoration:underline;text-underline-offset:3px}
+.topbar nav a[aria-current="page"]{color:var(--fg);text-decoration:none}
+.topbar nav a:hover,.topbar nav a:focus-visible{text-decoration-thickness:2px}
+.stageof{font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+/* Task level: J judgment, R rule, M machine, C client */
+.lv{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:2px;font-weight:600;color:#fff;white-space:nowrap}
+.lv-j{background:#b3261e} .lv-r{background:#1f5f8b} .lv-m{background:#3e8e4b} .lv-c{background:#b8741a}
+.levelkey{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:14px;color:var(--muted);align-items:center}
+.levelkey .lv{margin-left:0}
+.s1 dd.guess{color:var(--muted)}
+.s1 dd.note{border-left:2px solid var(--ae-take);padding-left:8px}
+.routes{margin:4px 0 0;padding-left:18px}
+.routes li+li{margin-top:3px}

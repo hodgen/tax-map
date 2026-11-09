@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stage 3: Workpapers Complete</title>
-<link rel="stylesheet" href="../assets/site.css?v=4">
+<link rel="stylesheet" href="../assets/site.css?v=5">
 </head>
 <body data-stage="3" data-root="../">
+<header class="topbar"><div class="in"><span class="brand">Tax Return Preparation Workflow</span><nav aria-label="Main"><a href="../">Home</a><a href="../about/">About</a></nav></div></header>
 
 <div class="wrap">
-  <p class="crumb"><a href="../">Home</a> · Stage 3 of 9</p>
+  <p class="stageof">Stage 3 of 9</p>
   <h1 id="stageTitle">Stage 3: Workpapers Complete</h1>
   <p class="updated" id="updated">Last updated:</p>
 
@@ -19,13 +20,13 @@
   <section id="steps">
     <h2>Lane A, Steps A14 to A18</h2>
     <p class="prose" style="color:var(--muted)">Stage 3 takes each item as received from the client in <a href="../2-data-collection/">stage 2</a> and processes the data point into the workpapers. It runs at the same time as stage 2, one item at a time.</p>
-    <div class="lanes" style="grid-template-columns:minmax(0,560px)">
-      <article class="lane">
-        <header><div class="n">Lane A · per item</div><h3>From Saved Document to Closed Item</h3></header>
-        <ol class="steps" id="stepsA"></ol>
-      </article>
-    </div>
-    <div class="joins">
+    <p class="prose" style="color:var(--muted);margin-top:10px">Steps and actions are Phil's. Inputs, outputs, tools, level, done test, exception and notes are first guesses by Claude (2026-11-08). Correct them.</p>
+    <div id="levelKey"></div>
+    <ol class="chain1" id="chainA"></ol>
+  </section>
+
+  <section id="ends">
+    <div class="joins" style="margin-top:0">
       <h3>When Stage 3 Ends</h3>
       <ul>
         <li>Workpapers are populated incrementally as data items are received. Stage 3 is complete when Stage 2A and Stage 2B are both complete and all data items extracted from the client are in the workpapers or marked irrelevant, and the workpapers have been reviewed.</li>
@@ -38,14 +39,17 @@
   <nav class="pager" id="pager"></nav>
 </div>
 
-<script src="../assets/stages.js?v=4"></script>
-<script src="../assets/lanes.js?v=4"></script>
+<script src="../assets/stages.js?v=5"></script>
+<script src="../assets/cards.js?v=5"></script>
 <script>
-const last = LANE_A[LANE_A.length-1];
-renderLane(document.getElementById('stepsA'), LANE_A.filter(s=>s.st===3), {
-  head: `<li class="baton"><strong>Stage 3 Commences for This Item</strong>The item was cleaned and saved at A12 in <a href="../2-data-collection/">Stage 2</a>.</li><li class="handoff">hands to Bot + Admin desk</li>`,
-  tail: `<li class="baton"><strong>Stage 3 Complete</strong>${last.next.done}</li><li class="handoff">hands to ${last.next.to}</li><li class="baton"><strong>Stage 4 Commences</strong>${last.next.start} <a href="../4-unreviewed-return/">Stage 4</a></li>`
-});
+document.getElementById('levelKey').innerHTML = levelKey();
+renderCards(document.getElementById('chainA'), [
+  {bound:{lab:"Item input", text:"Stamped, named document in the client's folder", sub:'Output of A12 in <a href="../2-data-collection/">Stage 2</a>. Once per item.'}},
+  {seam:'hands off'},
+  ...CARDS.s3,
+  {seam:'when every item is closed and the workpapers are complete'},
+  {bound:{lab:"Stage output → Stage 4 input", text:"Workpapers in which every number is checked by the Preparer and the Reviewer", sub:'UltraTax entry starts in <a href="../4-unreviewed-return/">Stage 4</a>.'}}
+]);
 </script>
 </body>
 </html>

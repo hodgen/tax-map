@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About This Workflow</title>
-<link rel="stylesheet" href="../assets/site.css?v=5">
+<link rel="stylesheet" href="../assets/site.css?v=6">
 </head>
 <body data-stage="0" data-root="../">
 <header class="topbar"><div class="in"><span class="brand">Tax Return Preparation Workflow</span><nav aria-label="Main"><a href="../">Home</a><a href="./" aria-current="page">About</a></nav></div></header>
@@ -50,7 +50,7 @@
         <tr><td>Tool</td><td>The software or document the worker uses.</td></tr>
         <tr><td>Output</td><td>What the task produces.</td></tr>
         <tr><td>Level</td><td>J, R, M or Client (see below).</td></tr>
-        <tr><td>Done test</td><td>How a person can see that the task is complete and correct.</td></tr>
+        <tr><td>Evidence</td><td>The record that the task leaves behind. It proves that the task happened and shows its result (see below).</td></tr>
         <tr><td>Time</td><td>Minutes for each occurrence.</td></tr>
         <tr><td>Exception</td><td>What the worker does when the case does not fit the rule.</td></tr>
         <tr><td>Status</td><td>Draft, Reviewed, Tested or Standard (see below).</td></tr>
@@ -69,6 +69,26 @@
     </div>
     <div class="box take" data-label="The pin-factory rule">
       <p>Split a task until each part has one level only. If a task mixes J and R, make two tasks. Many CPA tasks today are 10% judgment and 90% rule. When we split them, the CPA keeps the 10%.</p>
+    </div>
+  </section>
+
+  <section id="evidence">
+    <h2>Every Task Leaves Evidence</h2>
+    <div class="prose">
+      <p>It is not enough for a person to say “yes, that is right.” Each task must leave a concrete record that shows it happened and shows its result. A reviewer, an auditor, or the next worker on the line can then see the record without asking anyone.</p>
+      <p>This applies most of all to J tasks. Judgment that leaves no record cannot be checked, measured, or taught.</p>
+    </div>
+    <div class="box def" data-label="Minimum record for a J task">
+      <p><strong>Decision:</strong> Yes, No, or Other.</p>
+      <p><strong>Explanation:</strong> required for Other. Recommended for No.</p>
+      <p><strong>Who and when:</strong> the CPA's initials and the date.</p>
+      <p><strong>Where:</strong> on the item itself (the Request List line, the workpaper line, the checklist question), not in an email or in a person's memory.</p>
+    </div>
+    <div class="box ex" data-label="Example">
+      <p>A3, Generate Request List. The CPA does not only “look at” the Baseline report. Each Baseline line carries a mark: Ask, Do not ask, or Other. Each Do not ask and each Other carries a reason, the CPA's initials and the date. A4 can then check the marks without asking the CPA anything.</p>
+    </div>
+    <div class="box take" data-label="Why this matters for the pin factory">
+      <p>The record is the handoff. When the J task leaves a record, the next task can be R or M, because the next worker reads the record and does not need to understand the judgment.</p>
     </div>
   </section>
 
@@ -121,6 +141,6 @@
   </section>
 </div>
 
-<script src="../assets/stages.js?v=5"></script>
+<script src="../assets/stages.js?v=6"></script>
 </body>
 </html>

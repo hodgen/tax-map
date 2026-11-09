@@ -1,7 +1,8 @@
 // Task cards for every stage page. One data source, one card template (Maeghan's Stage 1 format
-// plus Level, Done test, Time, Exception, Status). Fields marked by Claude are first guesses (2026-11-08).
+// plus Level, Evidence, Time, Exception, Status). Fields marked by Claude are first guesses (2026-11-08).
 //
-// Card fields: id, name, input, action, who, tool, output, level (J|R|M|C), done, time, exc, status, note,
+// Card fields: id, name, input, action, who, tool, output, level (J|R|M|C), done (shown as Evidence: the record
+// the task leaves behind; for J tasks a decision Yes/No/Other, reason, initials, date), time, exc, status, note,
 // routes (list of [answer, where it goes]).
 
 const LEVELS = {
@@ -16,10 +17,10 @@ const CARDS = {
 // ---------- Stage 1, Path A (Maeghan Gershey, 2026-11-03) ----------
 s1A: [
  {id:"1", name:"Review the list with the CPAs", input:"Last year's client list", action:"Send each CPA the project list. Each CPA marks who to contact, who not to contact, and any notes.", who:"Maeghan, then each CPA", tool:"Excel (project list)", output:"Reach-out list with this client marked to contact", level:"J",
-  done:"Every client on last year's list is marked contact or do not contact.", exc:"A CPA does not answer by the due date: send to Phil.",
+  done:"Each client on the reach-out list is marked Contact, Do not contact, or Other, with a reason for Do not contact and Other, and the CPA's initials and date.", exc:"A CPA does not answer by the due date: send to Phil.",
   note:"Mixed task. Sending the list and collecting the marks is R. Deciding whom to contact is J. Candidate to split."},
  {id:"2", name:"Set the budget", input:"Reach-out list with this client marked to contact", action:"Prepare a budget estimate for this client's returns. William approves it.", who:"Maeghan prepares; William approves", tool:"Excel (reach-out list)", output:"Approved budget quote", level:"J",
-  done:"The quote has William's approval.", exc:"Scope changed from last year: send to the CPA before the quote goes to William.",
+  done:"The budget line shows Approved, Not approved, or Other (with a reason), with William's initials and date.", exc:"Scope changed from last year: send to the CPA before the quote goes to William.",
   note:"Mixed task. A first estimate from last year's fee plus a fixed increase is R. The approval is J. Candidate to split."},
  {id:"3", name:"Check contact rules", input:"Approved budget quote", action:"Check the client's Clio record for contact rules.", who:"Maeghan", tool:"Clio", output:"Approved quote with confirmed recipient and contact method", level:"R",
   done:"Recipient and contact method are written on the reach-out list.", exc:"The Clio record has no contact rules or conflicting rules: ask the CPA."},
@@ -55,7 +56,7 @@ s1B: [
 // ---------- Stage 2, Lane A: confirm and update (Phil, lane-a-steps-v2) ----------
 s2A: [
  {id:"P0", name:"Build “Baseline of Truth” SKILL.md", input:"Prior-year return files for clients the CPA knows well", action:"Create a SKILL.md that reads a prior-year return file and writes the Baseline of Truth report in a fixed format.", who:"Preparer CPA + Project Leader", tool:"Claude Code", output:"Approved Baseline of Truth SKILL.md", level:"J",
-  done:"Tested on clients the CPA knows well. Approved when it misses nothing. Every later change records who changed it and why.", exc:"The report misses an item: the CPA corrects the skill and tests again.",
+  done:"A test log: the clients tested, the items missed, and the CPA's approval with initials and date. A change log records who changed the skill, when, and why.", exc:"The report misses an item: the CPA corrects the skill and tests again.",
   note:"Done once for the firm, not once per client."},
  {id:"A1", name:"Baseline Report (“Baseline of Truth”)", input:"Last year's NetDocs matter as a zip (return, workpapers, data files) and the Baseline skill", action:"Admin downloads the matter and gives it to the bot. The bot lists every item on last year's return and FBAR, including items with no income (FBAR accounts, dormant entities, PFICs, trusts): last year's amount, the return line, the source document. It carries forward every memo on an unusual position. One Baseline item per account, entity or source.", who:"Bot + Admin desk", tool:"NetDocuments; bot", output:"Baseline of Truth report", level:"M",
   done:"The report has one line for each account, entity and source on last year's return and FBAR.", exc:"Last year's matter is incomplete or missing: send to the CPA.",
@@ -63,11 +64,11 @@ s2A: [
  {id:"A2", name:"Baseline of Truth Report: Quality Control", input:"Baseline of Truth report", action:"Review the report for completeness. Purpose: eliminate “I should have asked about this, but I didn't.”", who:"Admin desk or Bot", tool:"Baseline report; last year's return", output:"Baseline report checked for completeness", level:"R",
   done:"Method to be decided. Proposal: every schedule and form in last year's return maps to at least one Baseline line.", exc:"An item cannot be matched: send to the CPA."},
  {id:"A3", name:"Generate Request List", input:"Baseline report checked for completeness", action:"Decide what NOT to ask the client to deliver this year. Purpose: eliminate questions that we know for a fact no longer apply. Asking for something that does not apply makes the client think the CPA is not paying attention.", who:"Preparer CPA", tool:"Baseline report", output:"Draft Request List with the CPA's marks", level:"J",
-  done:"Every Baseline line is marked ask or do not ask."},
+  done:"Each Baseline line is marked Ask, Do not ask, or Other. Do not ask and Other carry a reason. Each mark has the CPA's initials and date."},
  {id:"A4", name:"Quality Control Request List (Admin/Bot)", input:"Draft Request List with the CPA's marks", action:"Identify every difference between the Baseline report and the Request List. Each item on the Baseline and not on the Request List has a written reason.", who:"Admin desk or Bot", tool:"Baseline report; Request List", output:"Request List with a written reason for each removed item", level:"R",
   done:"Number of Baseline lines = Request List items + removed items with a reason.", exc:"A removed item has no reason: send back to the CPA."},
  {id:"A5", name:"Request List: Quality Control Review (CPA)", input:"Request List with a written reason for each removed item", action:"The CPA reviews what the Admin or Bot did, and signs off. Now we know exactly what we will ask the client to provide.", who:"Preparer CPA", tool:"Request List", output:"Approved Request List", level:"J",
-  done:"The CPA's sign-off and date are on the Request List."},
+  done:"The Request List shows Approved, Not approved, or Other (with a reason), with the CPA's initials and date."},
  {id:"A6", name:"Create the Drop Zone", input:"Approved Request List", action:"One drop zone per Request List item, with the questionnaire and a progress meter that climbs to 100%. A watcher checks every drop zone and sends each new file to A8 at once. Then the client is told to start uploading. Until another tool is selected, use ShareFile.", who:"Bot + Admin desk", tool:"ShareFile", output:"Drop zone live; client told to upload", level:"M",
   done:"Number of drop zones = number of Request List items. One test upload reaches A8."},
  {id:"A7", name:"Client Delivers Data Items to Drop Zone", input:"Drop zone live; client told to upload", action:"One item at a time, to its drop zone. Email, text and calls also count. Each item shows last year's figure and accepts only three answers: the new document; closed (get a date from the client and accept the client's assurance unless otherwise indicated); open with no income (e.g., an account still sends its statement, for the FBAR balances). Third parties send the items they hold, with the client's permission.", who:"Client", tool:"ShareFile; email; text; phone", output:"One item answered, from any channel", level:"C",
@@ -89,22 +90,22 @@ s2A: [
 // ---------- Stage 2, Lane B: Go Fish ----------
 s2B: [
  {id:"B1", name:"Build the Go Fish Checklist", input:"Approved Request List and the firm's Go Fish question bank", action:"Prepare the script for the call. Questions are asked whether or not the item was reported before.", who:"Preparer CPA", tool:"Checklist template", output:"Go Fish checklist for this client", level:"J",
-  done:"Every question in the bank is on the checklist or removed with a reason.", note:"A standard question bank makes most of this R. The CPA adds client-specific questions (J)."},
+  done:"Each question in the bank is marked Keep or Remove; Remove carries a reason. Added questions are marked Added. The CPA's initials and date are on the checklist.", note:"A standard question bank makes most of this R. The CPA adds client-specific questions (J)."},
  {id:"B2", name:"Get Consent to Record", input:"Go Fish checklist for this client", action:"Get consent in writing before the call; confirm it at the start of the call. The transcription vendor must be named in the §7216 consent.", who:"Admin desk", tool:"Email; e-signature tool", output:"Written consent to record; call scheduled", level:"R",
   done:"Signed consent is saved before the call date.", exc:"The client refuses: the call goes ahead without a recording; the CPA takes notes."},
  {id:"B3", name:"Go Fish Call, in January", input:"Written consent to record; call scheduled", action:"Early, because every finding starts a new chase in Lane A. The CPA annotates the checklist on screen in front of the client; the bot takes notes.", who:"Preparer CPA", tool:"Video call; transcription", output:"Annotated checklist and call transcript", level:"J",
-  done:"Every checklist question was asked.", note:"The CPA owns this call because the CPA can read hesitation."},
+  done:"The annotated checklist and the call transcript are saved to the matter. Each question is marked Asked.", note:"The CPA owns this call because the CPA can read hesitation."},
  {id:"B4", name:"Write an Answer for Every Question", input:"Annotated checklist and call transcript", action:"The CPA writes the answers. “No” is an answer. “Not sure” stays open until it is resolved.", who:"Preparer CPA", tool:"Checklist", output:"Checklist with an answer for every question", level:"J",
-  done:"No question is blank.", note:"The bot can draft answers from the transcript (M); the CPA confirms them (J)."},
+  done:"Each question shows Yes, No, or Not sure (open), with the CPA's note and initials.", note:"The bot can draft answers from the transcript (M); the CPA confirms them (J)."},
  {id:"B5", name:"Route Each Answer", input:"Checklist with an answer for every question", action:"Send each answer to its destination.", who:"Preparer CPA", tool:"Checklist", output:"Every answer routed", level:"J",
   routes:[["Does not exist in the client's life","Recorded"],["Exists","New item in Lane A"],["Not sure: more data is needed","New item in Lane A"],["Not sure: research is needed","Research queue, memo to file"],["Problem in prior years","Separate cleanup matter, own engagement and price"],["New filing, e.g. Form 709 or 3520","Price Change Notice"]],
-  done:"Every answer has a destination.", note:"Once the CPA picks the answer, the routing itself is R."},
+  done:"Each answer shows its destination from the list above and the CPA's initials.", note:"Once the CPA picks the answer, the routing itself is R."},
  {id:"B6", name:"Send the Go Fish Summary", input:"Every answer routed", action:"Send the client: “We asked you all of these questions; here are your answers; here is what we decided, with your participation and consent.”", who:"Preparer CPA", tool:"Email", output:"Summary with the client", level:"R",
   done:"Summary sent; it lists every question.", note:"The bot can draft the summary from the checklist (M)."},
  {id:"B7", name:"Client Acknowledges the Summary", input:"Summary with the client", action:"The client acknowledges the summary in writing. This is the evidence for every “do nothing” decision.", who:"Client", tool:"Email; e-signature tool", output:"Written acknowledgment", level:"C",
   done:"The acknowledgment is saved to the matter.", exc:"The client disagrees with an answer: send to the CPA."},
  {id:"B8", name:"Close Lane B", input:"Written acknowledgment", action:"Every question answered, every new ticket resolved: folded into this year's return, or a memo in the workpapers that records the decision to do nothing.", who:"Preparer CPA", tool:"Workpapers", output:"Lane B closed", level:"J",
-  done:"No open Lane B ticket."}
+  done:"A close-out record lists every Lane B ticket with its result (in the return, or memo to file), and the CPA's initials and date."}
 ],
 
 // ---------- Stage 3: Lane A, per item ----------
@@ -116,9 +117,9 @@ s3: [
   done:"Each entry is ticked as matching its source page.",
   note:"Comparing two numbers needs no tax knowledge. Today the CPA does it; proposed: Admin."},
  {id:"A16", name:"Mark Irrelevant Data in Data File", input:"Workpaper entries checked", action:"For every data item in a data file received from the client, look at it and mark it as not needed for the return.", who:"Preparer CPA", tool:"Data file", output:"Data file with every item used or marked not needed", level:"J",
-  done:"Every data item in the file is either in the workpaper or marked not needed."},
+  done:"Each data item in the file is marked Used, Not needed, or Other (with a reason), with the CPA's initials."},
  {id:"A17", name:"Reviewer Check", input:"Data file with every item used or marked not needed", action:"The Reviewer CPA confirms the inclusions (A14) and the exclusions (A16) are accurate.", who:"Reviewer CPA", tool:"Workpaper; data file", output:"Inclusions and exclusions approved", level:"J",
-  done:"Reviewer's sign-off on the item.", exc:"An error found: back to the Preparer CPA.",
+  done:"For each item: Inclusions OK and Exclusions OK, each Yes, No, or Other (with a reason), with the Reviewer's initials and date.", exc:"An error found: back to the Preparer CPA.",
   note:"Mixed task. Re-checking the inclusions is R. Approving the exclusions is J. Candidate to split."},
  {id:"A18", name:"Close the Item", input:"Inclusions and exclusions approved", action:"Mark the item closed: received, complete, in the workpaper, and checked by both CPAs.", who:"Preparer CPA", tool:"Request List tracker", output:"Closed item", level:"M",
   done:"The item shows closed; all earlier checks are recorded.", note:"When every earlier check is recorded, closing is a status change a machine can make."}
@@ -133,7 +134,7 @@ function cardHTML(s, label){
   return `<li><article class="s1 ${s.level==='C'?'client':'firm'}" id="step-${s.id}">
     <header><span class="id">${label||('Step '+s.id)}</span><h3>${s.name}</h3><span class="lv ${lv.cls}" title="${lv.tip}">${lv.label}</span></header>
     <dl><dt>Input</dt><dd>${esc(s.input)}</dd><dt>Action</dt><dd>${esc(s.action)}</dd>${routes}<dt>Who</dt><dd>${esc(s.who)}</dd><dt>Tool</dt><dd>${esc(s.tool)}</dd><dt>Output</dt><dd class="out">${esc(s.output)}</dd>
-    <dt>Done test</dt><dd>${s.done||'<span class="guess">Not written yet.</span>'}</dd>
+    <dt>Evidence</dt><dd>${s.done||'<span class="guess">Not written yet.</span>'}</dd>
     <dt>Time</dt><dd class="guess">${s.time||'Not measured'}</dd>
     <dt>Exception</dt><dd>${s.exc||'<span class="guess">None recorded.</span>'}</dd>
     ${s.note?`<dt>Note</dt><dd class="note">${s.note}</dd>`:''}

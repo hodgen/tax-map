@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stage 2: Data Collection</title>
-<link rel="stylesheet" href="../assets/site.css?v=5">
+<link rel="stylesheet" href="../assets/site.css?v=6">
 </head>
 <body data-stage="2" data-root="../">
 <header class="topbar"><div class="in"><span class="brand">Tax Return Preparation Workflow</span><nav aria-label="Main"><a href="../">Home</a><a href="../about/">About</a></nav></div></header>
@@ -25,7 +25,7 @@
         <li>Lane A confirms and updates everything that is visible from last year. Steps P0 and A1 to A13 are stage 2. Steps A14 to A18 are stage 3.</li>
         <li>Lane B, the Go Fish call, looks for what is not visible. It is entirely in stage 2. Each new thing Lane B finds becomes a new item in Lane A.</li>
       </ul>
-      <p style="margin-top:10px">Steps and actions are Phil's. Inputs, outputs, tools, level, done test, exception and notes are first guesses by Claude (2026-11-08). Correct them.</p>
+      <p style="margin-top:10px">Steps and actions are Phil's. Inputs, outputs, tools, level, evidence, exception and notes are first guesses by Claude (2026-11-08). Correct them.</p>
     </div>
     <div id="levelKey"></div>
     <nav class="tabs" aria-label="Lanes"><a href="#laneA">Lane A: Confirm and update</a><a href="#laneB">Lane B: Go Fish</a><a href="#ends">When Stage 2 ends</a></nav>
@@ -58,8 +58,8 @@
   <nav class="pager" id="pager"></nav>
 </div>
 
-<script src="../assets/stages.js?v=5"></script>
-<script src="../assets/cards.js?v=5"></script>
+<script src="../assets/stages.js?v=6"></script>
+<script src="../assets/cards.js?v=6"></script>
 <script>
 document.getElementById('levelKey').innerHTML = levelKey();
 renderCards(document.getElementById('chainA'), [

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tax Return Preparation Workflow</title>
+<link rel="stylesheet" href="assets/site.css?v=4">
+</head>
+<body data-stage="0" data-root="">
+
+<div class="wrap">
+  <h1>Tax Return Preparation Workflow</h1>
+  <p class="updated" id="updated">Last updated:</p>
+  <p class="lede">Nine stages take a return from last year's client list to a closed file. The output of each stage is the input of the next. Click a stage to open its page.</p>
+
+  <section id="chain" style="margin-top:36px;border-top:0;padding-top:0">
+    <h2>Process Map</h2>
+    <div class="chain-scroll"><div class="chain" id="chainRow"></div></div>
+    <div class="legend">
+      <span class="client">Client owns the delay</span>
+      <span class="firm">Firm owns the delay</span>
+      <span class="third">Software or USPS</span>
+    </div>
+  </section>
+
+  <section id="stages">
+    <h2>The Nine Stages</h2>
+    <div class="cards" id="cards"></div>
+  </section>
+</div>
+
+<script src="assets/stages.js?v=4"></script>
+<script>
+document.getElementById('cards').innerHTML = STAGES.map(s=>`
+  <article class="card ${s.cls}">
+    <header><span class="n">Stage ${s.n}</span><span class="pill">${s.owner}</span></header>
+    <h3>${s.name}</h3>
+    <dl><dt>Starts</dt><dd>${s.start}</dd><dt>Ends</dt><dd>${s.end}</dd><dt>Output</dt><dd>${s.output}</dd></dl>
+    <a class="open" href="${stageHref(s)}">Open stage ${s.n} →</a>
+  </article>`).join('');
+</script>
+</body>
+</html>

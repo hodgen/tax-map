@@ -234,3 +234,5 @@ a.node[aria-current="page"]:hover{transform:none}
 .s1 dd.note{border-left:2px solid var(--ae-take);padding-left:8px}
 .routes{margin:4px 0 0;padding-left:18px}
 .routes li+li{margin-top:3px}
+a.brand{color:var(--link);text-decoration:none}
+a.brand:hover,a.brand:focus-visible{text-decoration:underline;text-underline-offset:4px}
